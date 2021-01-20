@@ -5,13 +5,27 @@ const hubsRouter = require('./hubs/hubs-router.js');
 const server = express();
 const helmet  = require('helmet')
 const morgan = require('morgan');
+
+
 server.use(express.json());
 
 server.use('/api/hubs', hubsRouter);
 server.use(helmet());
-server.use(morgan('dev'));
 
-server.use(methodLogger)
+
+
+// Faster to not use devLogger and tinyLogger like this 
+// const devLogger = morgan('dev')
+// const tinyLogger = morgan('tiny')
+// server.use(morgan('dev'));
+// server.use(methodLogger)
+// server.get('/',devLogger)
+// server.delete('/',tinyLogger)
+// Use it more compact and faster like this on the job
+server.get('/',morgan('dev'))
+server.delete('/',morgan('tiny'))
+
+
 
 
 server.get('/', (req, res) => {
