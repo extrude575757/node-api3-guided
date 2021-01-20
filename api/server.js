@@ -3,10 +3,16 @@ const express = require('express'); // importing a CommonJS module
 const hubsRouter = require('./hubs/hubs-router.js');
 
 const server = express();
-
+const helmet  = require('helmet')
+const morgan = require('morgan');
 server.use(express.json());
 
 server.use('/api/hubs', hubsRouter);
+server.use(helmet());
+server.use(morgan('dev'));
+
+server.use(methodLogger)
+
 
 server.get('/', (req, res) => {
   const nameInsert = (req.name) ? ` ${req.name}` : '';
@@ -17,4 +23,14 @@ server.get('/', (req, res) => {
   `);
 });
 
+
+server.delete('/', (req,res) =>{
+  res.send('deleted');
+})
+
+function methodLogger(req,res,next){
+  console.log(`${req.method} request`)
+  // res.send('yay')
+  next();
+}
 module.exports = server;
