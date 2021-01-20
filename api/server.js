@@ -2,15 +2,19 @@ const express = require('express'); // importing a CommonJS module
 
 const hubsRouter = require('./hubs/hubs-router.js');
 
-const server = express();
+
 const helmet  = require('helmet')
 const morgan = require('morgan');
-
+const server = express();
 
 server.use(express.json());
+server.use(helmet());
+server.use(lockout)
+
 
 server.use('/api/hubs', hubsRouter);
-server.use(helmet());
+
+
 
 
 
@@ -22,10 +26,11 @@ server.use(helmet());
 // server.get('/',devLogger)
 // server.delete('/',tinyLogger)
 // Use it more compact and faster like this on the job
-server.get('/',morgan('dev'))
-server.delete('/',morgan('tiny'))
+// server.get('/',morgan('dev'))
+// server.delete('/',morgan('tiny'))
 
-
+server.use(methodLogger);
+server.use(addName)
 
 
 server.get('/', (req, res) => {
@@ -38,13 +43,26 @@ server.get('/', (req, res) => {
 });
 
 
-server.delete('/', (req,res) =>{
-  res.send('deleted');
-})
+// server.delete('/', (req,res) =>{
+//   res.send('deleted');
+// })
 
 function methodLogger(req,res,next){
   console.log(`${req.method} request`)
   // res.send('yay')
   next();
 }
+
+
+function addName(req,res,next){
+  // req.name = req.name || 'ssssssskkkkk';
+  req.name = req.name || req.headers['x-name'];
+  next();
+}
+
+
+function lockout(req,res,next){
+  res.status(403).json({message: 'api in maintenance mode'})
+}
+
 module.exports = server;
