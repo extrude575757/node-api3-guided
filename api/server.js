@@ -92,9 +92,12 @@ function lockout3(req,res,next){
   const date = new Date();
   const n = date.getSeconds();
   if(Number.isInteger(n / 3)){
-    res.status(403).json({
-      error:"you dont pass", seconds: n
-    })
+
+    next({code:403,message:'you dont pass ever',
+            seconds: n})
+    // res.status(403).json({
+    //   error:"you dont pass", seconds: n
+    // })
   }else{
     next();
   }
@@ -118,13 +121,24 @@ function liveStatus(req,res,next){
   const curDate = new Date();
   res.state(403).json({message: `Non shall pass ${curDate.setSeconds()}`})
 
+
+
+
 }
 
 
 server.use((error,req,res,next) =>{
-  res.status(400).json({
-    message: 'There was a error',error
-  });
+
+// Old way
+  // res.status(400).json({
+  //   message: 'There was a error',error
+  // });
+// Code object being used 
+  res.status(error.code).json({
+      message: 'There was a error',error
+    });
+
+
 })
 
 

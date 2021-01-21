@@ -140,11 +140,17 @@ function validateId(req,res,next){
         req.hub = hub ;
         next();
       }else {
-        res.status(404).json(
-          {
-            message: `Hub id not found`
-          }
-        )
+        // res.status(404).json(
+        //   {
+        //     message: `Hub id not found`
+        //   }
+        // )
+// Our own error object
+        next({
+          code: 404,
+          message: 'invalid hub id'
+        })
+
       }
       
     })
