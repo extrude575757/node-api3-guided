@@ -5,6 +5,14 @@ const Messages = require('../messages/messages-model.js');
 
 const router = express.Router();
 
+// Does not run async it will run in order of each function
+// As each function registered its exec before the method before it
+
+router.use((req,res,next) =>{
+  console.log('in the hubs router!');
+  next();
+})
+
 router.get('/', (req, res) => {
   Hubs.find(req.query)
     .then(hubs => {

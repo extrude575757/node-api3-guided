@@ -9,7 +9,16 @@ const server = express();
 
 server.use(express.json());
 server.use(helmet());
-server.use(lockout3)
+
+// server.use(morgan('dev))
+
+
+server.use(methodLogger)
+server.use(addName)
+// The date and seconds logger
+// server.use(lockout3)
+
+
 
 
 server.use('/api/hubs', hubsRouter);
@@ -37,8 +46,8 @@ server.get('/', (req, res) => {
   const nameInsert = (req.name) ? ` ${req.name}` : '';
 
   res.send(`
-    <h2>Lambda Hubs API</h2>
-    <p>Welcome${nameInsert} to the Lambda Hubs API</p>
+    <h2>Here it is with a name header </h2>
+    <p>Welcome  ${req.headers['name']} adjustable in postman header param called name</p>
   `);
 });
 
@@ -56,7 +65,8 @@ function methodLogger(req,res,next){
 
 function addName(req,res,next){
   // req.name = req.name || 'ssssssskkkkk';
-  req.name = req.name || req.headers['x-name'];
+  // req.name = req.name || req.headers['x-name'];
+  req.name = req.name || req.headers['name']
   next();
 }
 
