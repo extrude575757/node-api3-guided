@@ -133,7 +133,7 @@ server.use((error,req,res,next) =>{
   // res.status(400).json({
   //   message: 'There was a error',error
   // });
-// Code object being used 
+// Code object being used here with code
   res.status(error.code).json({
       message: 'There was a error',error
     });
