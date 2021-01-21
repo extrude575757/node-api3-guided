@@ -9,7 +9,7 @@ const server = express();
 
 server.use(express.json());
 server.use(helmet());
-server.use(lockout)
+server.use(lockout3)
 
 
 server.use('/api/hubs', hubsRouter);
@@ -43,9 +43,9 @@ server.get('/', (req, res) => {
 });
 
 
-// server.delete('/', (req,res) =>{
-//   res.send('deleted');
-// })
+server.delete('/', (req,res) =>{
+  res.send('deleted');
+})
 
 function methodLogger(req,res,next){
   console.log(`${req.method} request`)
@@ -64,5 +64,42 @@ function addName(req,res,next){
 function lockout(req,res,next){
   res.status(403).json({message: 'api in maintenance mode'})
 }
+
+function lockout3(req,res,next){
+  const date = new Date();
+  const n = date.getSeconds();
+  if(Number.isInteger(n / 3)){
+    res.status(403).json({
+      error:"you dont pass", seconds: n
+    })
+  }else{
+    next();
+  }
+}
+
+
+function lockout2(req,res,next){
+  let d = new Date();
+  let n = d.getSeconds();
+  if(n%3 === 0){
+    res.status(403).json({
+      message: `You shall not pass today`, sec: n
+    }) 
+  }else {
+    next()
+  }
+
+
+
+
+}
+
+// Workzone function
+function liveStatus(req,res,next){
+  const curDate = new Date();
+  res.state(403).json({message: `Non shall pass ${curDate.setSeconds()}`})
+
+}
+
 
 module.exports = server;
