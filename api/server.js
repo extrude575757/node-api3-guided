@@ -42,14 +42,27 @@ server.use(methodLogger);
 server.use(addName)
 
 
+// Using the name header 
+
 server.get('/', (req, res) => {
   const nameInsert = (req.name) ? ` ${req.name}` : '';
 
   res.send(`
     <h2>Here it is with a name header </h2>
-    <p>Welcome  ${req.headers['name']} adjustable in postman header param called name</p>
+    <p>Welcome  ${req.headers['x-name']} adjustable in postman header param called name</p>
   `);
 });
+// Vs. Using the nameInsert
+
+// server.get('/', (req, res) => {
+//   const nameInsert = (req.name) ? ` ${req.name}` : '';
+
+//   res.send(`
+//     <h2>Here it is with a name header </h2>
+//     <p>Welcome  ${nameInsert} adjustable in postman header param called name</p>
+//   `);
+// });
+
 
 
 server.delete('/', (req,res) =>{
@@ -65,8 +78,8 @@ function methodLogger(req,res,next){
 
 function addName(req,res,next){
   // req.name = req.name || 'ssssssskkkkk';
-  // req.name = req.name || req.headers['x-name'];
-  req.name = req.name || req.headers['name']
+  req.name = req.name || req.headers['x-name'];
+  // req.name = req.name || req.headers['name']
   next();
 }
 
@@ -98,10 +111,6 @@ function lockout2(req,res,next){
   }else {
     next()
   }
-
-
-
-
 }
 
 // Workzone function
@@ -110,6 +119,13 @@ function liveStatus(req,res,next){
   res.state(403).json({message: `Non shall pass ${curDate.setSeconds()}`})
 
 }
+
+
+server.use((error,req,res,next) =>{
+  res.status(400).json({
+    message: 'There was a error',error
+  });
+})
 
 
 module.exports = server;
